@@ -10,6 +10,8 @@ const englishHelloPrefix = "hello "
 const spanishHelloPrefix = "hola "
 const frenchHelloPrefix = "bonjour "
 
+var Version = "development"
+
 func greetingPrefix(language string) string {
 	p := strings.ToLower(language)
 	switch p {
@@ -34,6 +36,8 @@ func Hello(name string, language string) string {
 }
 
 func main() {
+	fmt.Println("Version:\t", Version)
+
 	if len(os.Args) > 1 {
 		fmt.Println(Hello("", os.Args[1]))
 	} else {

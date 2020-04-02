@@ -9,6 +9,10 @@ FROM golang@sha256:244a736db4a1d2611d257e7403c729663ce2eb08d4628868f9d9ef2735496
 # Ca-certificates is required to call HTTPS endpoints.
 RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-certificates
 
+ARG flags="-X main.Version=none -X main.Build=none"
+ENV LDFLAGS=$flags
+RUN echo "$LDFLAGS"
+
 # Create appuser
 ENV USER=appuser
 ENV UID=10001
@@ -33,11 +37,12 @@ RUN go mod verify
 
 COPY . .
 
-RUN go test -v .
+RUN go test .
 
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
-      -ldflags='-w -s -extldflags "-static"' -a \
+      -ldflags="$LDFLAGS" \
+      -a \
       -o /go/bin/hello .
 
 ############################
